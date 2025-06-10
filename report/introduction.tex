@@ -1,0 +1,29 @@
+\section{Introduction}
+This report investigates gradient-based optimisation techniques for training an Artificial Neural Network (ANN) to classify images of handwritten digits from the MNIST dataset. The network under consideration is a multi-layer perceptron (MLP) that consists of an input layer with 784 neurons, three hidden layers with 300, 100, and 100 neurons respectively, and an output layer with 10 neurons corresponding to the digit classes (0--9).
+
+Each MNIST image, originally a 28 $\times$ 28 pixel grid, is first flattened into a vector
+\[
+    x \in [0,1]^{784}
+\]
+by normalising the pixel intensities from 0 to 255. The forward propagation through the network is computed in two stages:
+\begin{enumerate}
+    \item \textbf{Hidden Layers:}
+    Each hidden neuron computes a weighted sum of the inputs from the previous layer followed by the application of a non-linear activation function. The Rectified Linear Unit (ReLU) is used for the hidden layers, defined as:
+    \[
+        h^{(n)}_j = \max\!\left(0, \sum_{i=1}^{N_{n-1}} w_{ij}^{(n)} \, h_i^{(n-1)}\right) \quad \text{with} \quad h^{(0)} = x,
+    \]
+    where \(w_{ij}^{(n)}\) represents the synaptic weight connecting neuron \(i\) from layer \(n-1\) to neuron \(j\) in layer \(n\), and \(N_{n-1}\) denotes the number of neurons in the \((n-1)^{th}\) layer.
+
+    \item \textbf{Output Layer:}
+    The output layer produces logits that are converted into a probability distribution using the softmax function:
+    \[
+        S_j = \frac{e^{h_{O_j}}}{\sum_{k=1}^{N_O} e^{h_{O_k}}},
+    \]
+    where \(S_j\) is the probability of the input image belonging to class \(j\), \(h_{O_j}\) is the output neuron activation, and \(N_O=10\) is the total number of output neurons.
+\end{enumerate}
+
+To ensure stable training, the network weights are initialised with a uniform distribution following the approach proposed by Glorot and Bengio~\cite{glorot2010understanding}:
+\[
+    w_{ij} \sim \mathcal{U}\!\left(-\sqrt{\frac{6}{m+n}},\, \sqrt{\frac{6}{m+n}}\right),
+\]
+where \(m\) and \(n\) denote the numbers of neurons in the previous and current layers, respectively.
